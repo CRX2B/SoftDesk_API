@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -41,6 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "users",
+    "projects",
     "api",
 ]
 
@@ -135,3 +138,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Durée de validité du token d'accès
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Durée du refresh token
+    'ROTATE_REFRESH_TOKENS': True,  # Régénère un refresh token à chaque utilisation
+    'BLACKLIST_AFTER_ROTATION': True,  # Blackliste les anciens refresh tokens
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,  # Utilisation de la clé secrète Django
+    'AUTH_HEADER_TYPES': ('Bearer',),  # Spécifie le type de token utilisé dans les requêtes
+}
+
+AUTH_USER_MODEL = 'users.User'

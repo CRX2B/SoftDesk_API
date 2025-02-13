@@ -8,3 +8,4 @@ migrations/
 *.pyc
 *.pyo
 *.pyd
+*.json
