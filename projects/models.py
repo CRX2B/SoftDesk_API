@@ -6,7 +6,8 @@ import uuid
 class Project(models.Model):
     """
     Modèle pour gérer les projets créés par les utilisateurs.
-    Seul l'auteur (créateur) peut modifier ou supprimer son projet.
+    Un projet possède un titre, une description, un type (Backend, Frontend, IOS, Android),
+    un auteur et est associé à plusieurs contributeurs via un modèle intermédiaire.
     """
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     created_time = models.DateTimeField(auto_now_add=True)
@@ -28,6 +29,9 @@ class Project(models.Model):
     )
     
     def __str__(self):
+        """
+        Représentation en chaîne d'un projet.
+        """
         return self.title
     
     
@@ -86,7 +90,8 @@ class Comment(models.Model):
     
 class Contributor(models.Model):
     """
-    Modèle qui définit les utilisateurs ayant accès à un projet.
+    Modèle définissant l'association entre un utilisateur et un projet en tant que contributeur.
+    Garantit que chaque association est unique.
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="contributions")
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="contributor_set")
@@ -96,4 +101,7 @@ class Contributor(models.Model):
         unique_together = ('user', 'project')
         
     def __str__(self):
+        """
+        Représentation en chaîne d'une contribution utilisateur à un projet.
+        """
         return f"{self.user.username} - {self.project.title}"
