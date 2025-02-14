@@ -4,6 +4,7 @@ from rest_framework.exceptions import PermissionDenied
 from .models import Project, Issue, Comment, Contributor
 from .serializers import ProjectSerializer, IssueSerializer, CommentSerializer, ContributorSerializer
 from rest_framework.response import Response
+from .permissions import IsAuthorOrReadOnly, IsProjectAuthor
 
 
 class ProjectViewSet(ModelViewSet):
@@ -13,7 +14,7 @@ class ProjectViewSet(ModelViewSet):
     Seul l'auteur peut modifier ou supprimer un projet.
     """
     serializer_class = ProjectSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
     
     def get_queryset(self):
         return Project.objects.filter(contributors=self.request.user)
@@ -29,7 +30,7 @@ class IssueViewSet(ModelViewSet):
     Seuls les contributeurs du projet peuvent voir et créer des issues.
     """
     serializer_class = IssueSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
     
     def get_queryset(self):
         return Issue.objects.filter(project__contributors=self.request.user)
@@ -47,7 +48,7 @@ class CommentViewSet(ModelViewSet):
     Seuls les contributeurs du projet peuvent voir et créer des commentaires.
     """
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
     
     def get_queryset(self):
         return Comment.objects.filter(issue__project__contributors=self.request.user)
@@ -65,7 +66,7 @@ class ContributorViewSet(ModelViewSet):
     Seul l'auteur du projet peut ajouter ou retirer des contributeurs.
     """
     serializer_class = ContributorSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProjectAuthor]
     
     def get_queryset(self):
         return Contributor.objects.filter(project__author=self.request.user)

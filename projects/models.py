@@ -9,6 +9,7 @@ class Project(models.Model):
     Seul l'auteur (créateur) peut modifier ou supprimer son projet.
     """
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    created_time = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     type = models.CharField(
@@ -36,6 +37,7 @@ class Issue(models.Model):
     Seul l'auteur peut modifier ou supprimer son issue.
     """
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    created_time = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     status = models.CharField(
@@ -73,6 +75,7 @@ class Comment(models.Model):
     Seul l'auteur peut modifier ou supprimer son commentaire.
     """
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    created_time = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
@@ -87,6 +90,7 @@ class Contributor(models.Model):
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="contributions")
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="contributor_set")
+    created_time = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         unique_together = ('user', 'project')
