@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -130,24 +130,24 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Durée de validité du token d'accès
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Durée du refresh token
-    'ROTATE_REFRESH_TOKENS': True,  # Régénère un refresh token à chaque utilisation
-    'BLACKLIST_AFTER_ROTATION': True,  # Blackliste les anciens refresh tokens
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,  # Utilisation de la clé secrète Django
-    'AUTH_HEADER_TYPES': ('Bearer',),  # Spécifie le type de token utilisé dans les requêtes
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=30
+    ),  # Durée de validité du token d'accès
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Durée du refresh token
+    "ROTATE_REFRESH_TOKENS": True,  # Régénère un refresh token à chaque utilisation
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
