@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "poetry"
+    directory: "/" 
+    schedule:
+      interval: "weekly"  
+    open-pull-requests-limit: 5 
+    assignees:
+      - "CRX2B"
+    reviewers:
+      - "CRX2B"
+    labels:
+      - "dependencies"
+    ignore:
+      - dependency-name: "Django"
+        versions: ["4.x"] 
