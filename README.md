@@ -125,7 +125,7 @@ Le projet est organisé en plusieurs applications :
 ### Authentification et Utilisateurs
 
 - **Inscription (Register)**
-  - **POST** `/api/users/register/`  
+  - **POST** `/api/users/`  
     Corps de la requête (JSON) :
 
     ```json
