@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from .models import Project, Issue, Comment, Contributor
+from .models import Project, Issue, Comment, Contributor, User
 
-# Serializer minimal pour l'affichage en liste
 class ProjectListSerializer(serializers.ModelSerializer):
     """
     Serializer pour l'affichage simplifié des projets.
@@ -12,7 +11,6 @@ class ProjectListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Project
-        # Champs essentiels à afficher dans une liste de projets
         fields = ('id', 'title', 'type', 'author')
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -45,14 +43,35 @@ class IssueSerializer(serializers.ModelSerializer):
     """
     Serializer pour les tickets (issues) d'un projet.
     
-    Ce serializer gère la représentation des tickets avec le champ 'author' en lecture seule.
+    Ce serializer gère la représentation des tickets avec le champ 'author' en lecture seule
+    et le champ 'assignee' en utilisant le username.
     """
     author = serializers.ReadOnlyField(source='author.username')
+    assignee = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field='username',
+        allow_null=True,
+        required=False
+    )
     
     class Meta:
         model = Issue
         fields = '__all__'
         read_only_fields = ('author', 'created_time')
+        
+    def validate(self, data):
+        """
+        Valide que si un assigné est fourni, cet utilisateur fait bien partie des contributeurs du projet.
+        """
+        assignee = data.get("assignee")
+        if assignee is not None:
+            project = data.get("project")
+            if project is None:
+                raise serializers.ValidationError("Le champ 'project' doit être renseigné pour l'assignation.")
+            # Vérifier que l'utilisateur assigné est bien contributeur du projet
+            if not Contributor.objects.filter(project=project, user=assignee).exists():
+                raise serializers.ValidationError("L'utilisateur assigné doit être contributeur du projet.")
+        return data
         
         
 class CommentSerializer(serializers.ModelSerializer):
@@ -75,7 +94,15 @@ class ContributorSerializer(serializers.ModelSerializer):
     Serializer pour la gestion des contributeurs.
     
     Permet de représenter l'association entre un utilisateur et un projet.
+    Ici, on utilise SlugRelatedField pour pouvoir ajouter un contributeur en fournissant son nom d'utilisateur (username)
+    plutôt que son ID.
     """
+    # Ce champ permet de convertir automatiquement le username reçu en instance User et vice-versa.
+    user = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field='username'
+    )
+    
     class Meta:
         model = Contributor
         fields = '__all__'

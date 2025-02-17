@@ -111,121 +111,60 @@ Le projet est organisé en plusieurs applications :
   - Endpoints gérés par `UserViewSet` dans `users/views.py`.
   - Sérialisation via `UserSerializer` dans `users/serializers.py`.
 
-- **projects** : Gère les projets, les issues (tickets), les commentaires et la gestion des contributeurs.
+- **api** : Gère les projets, les issues (tickets), les commentaires et la gestion des contributeurs.
   - `ProjectViewSet` : Création, consultation, modification et suppression des projets.
   - `IssueViewSet` : Gestion des tickets liés à un projet.
   - `CommentViewSet` : Gestion des commentaires sur les tickets.
   - `ContributorViewSet` : Gestion des contributeurs d'un projet.
   - Permissions personnalisées dans `projects/permissions.py` (ex. IsAuthorOrReadOnly, IsProjectAuthor).
 
-- **api** : Regroupe les endpoints (via routeurs DRF) pour exposer l'API complète de Softdesk.
-
 ## Endpoints de l'API
 
 ### Authentification et Utilisateurs
 
-- **Inscription (Register)**
-  - **POST** `/api/users/`  
-    Corps de la requête (JSON) :
+- **Inscription**
+  - **POST** `/api/users/register/`  
+    Crée un nouveau compte utilisateur.
 
-    ```json
-    {
-      "username": "nouvel_utilisateur",
-      "email": "nouvel_utilisateur@example.com",
-      "password": "motdepasse123",
-      "birth_date": "2000-01-01",
-      "consent": true,
-      "can_be_contacted": false,
-      "can_data_be_shared": false
-    }
-    ```
-
-- **Connexion (Login)**
-  - **POST** `/api/token/`  
-    Envoi le username et le password pour obtenir un Access Token et un Refresh Token :
-
-    ```json
-    {
-      "username": "nouvel_utilisateur",
-      "password": "motdepasse123"
-    }
-    ```
-
-- **Actualisation du Token (Refresh)**
-  - **POST** `/api/token/refresh/`  
-    Corps de la requête :
-
-    ```json
-    {
-      "refresh": "<refresh_token>"
-    }
-    ```
-
-- **Vérification du Token (Verify)**
-  - **POST** `/api/token/verify/`
-
-- **Détails Utilisateur**
-  - **GET** `/api/users/` (Renvoie uniquement les données de l'utilisateur connecté)
+- **Connexion**
+  - **POST** `/api/users/login/`  
+    Récupère les tokens d'accès et de rafraîchissement pour l'authentification.
 
 ### Projets
 
 - **Liste des Projets**
   - **GET** `/api/projects/`  
-    Seuls les utilisateurs contributeurs peuvent voir les projets auxquels ils ont accès.
+    Récupère la liste des projets auxquels l'utilisateur contribue.
 
-- **Création d'un Projet**
-  - **POST** `/api/projects/`  
-    Lors de la création, l'utilisateur connecté devient l'auteur et est automatiquement ajouté en tant que contributeur.
-    Exemple de corps de requête :
+- **Détails d'un Projet**
+  - **GET** `/api/projects/<project_id>/`  
+    Récupère les informations détaillées du projet spécifié.
 
-    ```json
-    {
-      "title": "Nouveau projet",
-      "description": "Description du projet",
-      "type": "Backend"
-    }
-    ```
-
-- **Détails, Mise à jour et Suppression**
-  - **GET / PUT / DELETE** `/api/projects/<project_id>/`
-
-  > **Note :** Seul l'auteur du projet peut modifier ou supprimer le projet.
+- **Liste des Issues d'un Projet**
+  - **GET** `/api/projects/<project_id>/issues/`  
+    Récupère la liste des tickets (issues) associés au projet spécifié.
 
 ### Issues
 
-- **Liste des Tickets (Issues)**
-  - **GET** `/api/issues/`  
-    Filtré sur les projets auxquels l'utilisateur contribue.
-
 - **Création d'un Ticket**
-  - **POST** `/api/issues/`  
-    Exemple de corps de requête :
-
-    ```json
-    {
-      "title": "Bug sur la feature X",
-      "description": "Description détaillée du bug",
-      "tag": "Bug",              // ou "Task", "Amélioration"
-      "priority": "Haute",
-      "status": "À faire",
-      "project": "<project_id>",
-      "assignee": "<user_id>"
-    }
-    ```
+  - **POST** `/api/projects/<project_id>/issues/`  
+    Crée un ticket pour un projet auquel l'utilisateur contribue.
 
 - **Détails, Mise à jour et Suppression d'un Ticket**
-  - **GET / PUT / DELETE** `/api/issues/<issue_id>/`
+  - **GET / PUT / DELETE** `/api/projects/<project_id>/issues/<issue_id>/`
 
-> **Important :** Seuls les contributeurs du projet peuvent créer ou consulter les issues.
+- **Liste des Commentaires pour une Issue**
+  - **GET** `/api/projects/<project_id>/issues/<issue_id>/comments/`  
+    Récupère la liste de tous les commentaires associés au ticket spécifié.
 
 ### Commentaires
 
 - **Liste des Commentaires**
-  - **GET** `/api/comments/`  
-    Seuls les commentaires associés à des tickets des projets auxquels l'utilisateur contribue sont accessibles.
+  - **GET** `/api/projects/<project_id>/comments/`  
+    Récupère la liste des commentaires pour les tickets des projets auxquels l'utilisateur contribue.
 
 - **Création d'un Commentaire**
-  - **POST** `/api/comments/`  
+  - **POST** `/api/projects/<project_id>/comments/`  
     Exemple de corps de requête :
 
     ```json
@@ -236,35 +175,32 @@ Le projet est organisé en plusieurs applications :
     ```
 
 - **Détails, Mise à jour et Suppression d'un Commentaire**
-  - **GET / PUT / DELETE** `/api/comments/<comment_id>/`
+  - **GET / PUT / DELETE** `/api/projects/<project_id>/comments/<comment_id>/`
 
 ### Contributeurs
 
 - **Liste des Contributeurs**
-  - **GET** `/api/contributors/`  
-    Seuls les contributeurs des projets dont l'utilisateur est auteur sont listés.
+  - **GET** `/api/projects/<project_id>/contributors/`  
+    Récupère la liste des contributeurs pour le projet spécifié.
 
 - **Ajout d'un Contributeur**
-  - **POST** `/api/contributors/`  
+  - **POST** `/api/projects/<project_id>/contributors/`  
     Seul l'auteur d'un projet peut ajouter un contributeur. Exemple de corps de requête :
 
     ```json
     {
-      "project": "<project_id>",
-      "user": "<user_id>"
+      "user": "<user_username>"
     }
     ```
 
 - **Mise à jour et Suppression d'un Contributeur**
-  - **PUT / DELETE** `/api/contributors/<contributor_id>/`
-
-  > **Note :** Les permissions (via IsProjectAuthor) assurent que seul l'auteur du projet peut gérer les contributeurs.
+  - **PUT / DELETE** `/api/projects/<project_id>/contributors/<contributor_id>/`
 
 ## Technologies
 
 - **Backend** : Django, Django REST Framework
 - **Authentification** : JWT via djangorestframework-simplejwt
-- **Gestion des dépendances** : Poetry (ou pip)
+- **Gestion des dépendances** : Poetry
 - **Environnement** : python-dotenv pour la gestion des variables d'environnement
 
 ---

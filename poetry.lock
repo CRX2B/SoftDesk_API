@@ -77,6 +77,22 @@ python-jose = ["python-jose (==3.3.0)"]
 test = ["cryptography", "freezegun", "pytest", "pytest-cov", "pytest-django", "pytest-xdist", "tox"]
 
 [[package]]
+name = "drf-nested-routers"
+version = "0.94.1"
+description = "Nested resources for the Django Rest Framework"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "drf-nested-routers-0.94.1.tar.gz", hash = "sha256:2b846385ed95c9f17bf4242db3b264ac826b5af00dda6c737d3fe7cc7bf2c7db"},
+    {file = "drf_nested_routers-0.94.1-py2.py3-none-any.whl", hash = "sha256:3a8ec45a025c0f39188ec1ec415244beb875a6f4db87911a1f5a606d09b68c9f"},
+]
+
+[package.dependencies]
+Django = ">=4.2"
+djangorestframework = ">=3.14.0"
+
+[[package]]
 name = "pyjwt"
 version = "2.10.1"
 description = "JSON Web Token implementation in Python"
@@ -141,4 +157,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "9b2c2bb6e9756b1a2bd5124ac933544494a76906532766a48faf56cb7ca8c73d"
+content-hash = "7fa44be69b3894f1b4abd93e37e57bdbd607e398b98113c832bea281cd7612bc"

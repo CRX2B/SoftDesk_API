@@ -7,10 +7,8 @@ class IsAuthorOrReadOnly(BasePermission):
     Les autres utilisateurs (et notamment les contributeurs) ne peuvent que consulter.
     """
     def has_object_permission(self, request, view, obj):
-        # Autoriser la lecture pour toute méthode sûre (GET, HEAD, OPTIONS)
         if request.method in SAFE_METHODS:
             return True
-        # Pour les autres méthodes, vérifier que l'utilisateur est bien l'auteur
         return hasattr(obj, 'author') and obj.author == request.user
 
 class IsProjectAuthor(BasePermission):
@@ -19,5 +17,4 @@ class IsProjectAuthor(BasePermission):
     Seul l'auteur du projet peut ajouter, modifier ou supprimer des contributeurs.
     """
     def has_object_permission(self, request, view, obj):
-        # Ici, obj est une instance de Contributor ; on vérifie que l'auteur du projet est l'utilisateur courant
         return obj.project.author == request.user 
