@@ -16,7 +16,7 @@ Cette documentation fournit tous les endpoints de l'API ainsi que des exemples d
 ## Authentification et Utilisateurs
 
 ### Inscription
-- **POST** `/api/users/register/`  
+- **POST** `/api/register/`  
   Crée un nouveau compte utilisateur.
 
   **Exemple de corps de requête :**
@@ -33,7 +33,7 @@ Cette documentation fournit tous les endpoints de l'API ainsi que des exemples d
   ```
 
 ### Connexion
-- **POST** `/api/users/login/`  
+- **POST** `/api/login/`  
   Récupère les tokens d'accès et de rafraîchissement pour l'authentification.
 
 - **POST** `/api/token/refresh/`  
