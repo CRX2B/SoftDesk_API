@@ -57,7 +57,7 @@ class User(AbstractUser):
         """
         self.username = "Utilisateur supprimé"
         self.email = None
-        self.birth_date = None
+        self.birth_date = date(1900, 1, 1)
         self.consent = False
         self.can_be_contacted = False
         self.can_data_be_shared = False
@@ -67,9 +67,9 @@ class User(AbstractUser):
     def clean(self):
         """
         Effectue des validations supplémentaires avant la sauvegarde.
-        Vérifie que la date de naissance est renseignée pour les utilisateurs non superutilisateurs.
+        Vérifie que la date de naissance est renseignée pour les utilisateurs actifs non superutilisateurs.
         """
-        if not self.is_superuser and not self.birth_date:
+        if not self.is_superuser and self.is_active and not self.birth_date:
             raise ValidationError("La date de naissance est obligatoire.")
         super().clean()
 

@@ -2,6 +2,8 @@ from rest_framework.viewsets import ModelViewSet
 from .models import User
 from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 
 class UserViewSet(ModelViewSet):
@@ -36,3 +38,27 @@ class UserViewSet(ModelViewSet):
         :return: Queryset filtré par l'ID de l'utilisateur connecté.
         """
         return self.queryset.filter(id=self.request.user.id)
+
+    @action(detail=False, methods=['get', 'put', 'patch', 'delete'])
+    def me(self, request):
+        """
+        Endpoint pour gérer son propre compte utilisateur.
+        GET: récupère ses informations
+        PUT/PATCH: met à jour ses informations
+        DELETE: supprime son compte (anonymisation)
+        """
+        user = request.user
+        
+        if request.method == 'GET':
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
+            
+        elif request.method in ['PUT', 'PATCH']:
+            serializer = self.get_serializer(user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+            
+        elif request.method == 'DELETE':
+            user.delete_personnal_data()  # Méthode déjà existante dans le modèle User
+            return Response(status=204)

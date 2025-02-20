@@ -9,6 +9,7 @@ Cette documentation fournit tous les endpoints de l'API ainsi que des exemples d
 - [Issues](#issues)
 - [Commentaires](#commentaires)
 - [Contributeurs](#contributeurs)
+- [Gestion du Compte Utilisateur](#gestion-du-compte-utilisateur)
 
 ---
 
@@ -133,4 +134,29 @@ Cette documentation fournit tous les endpoints de l'API ainsi que des exemples d
   ```
 
 ### Mise à jour et Suppression d'un Contributeur
-- **PUT / DELETE** `/api/projects/<project_id>/contributors/<contributor_id>/` 
+- **PUT / DELETE** `/api/projects/<project_id>/contributors/<contributor_id>/`
+
+---
+
+## Gestion du Compte Utilisateur
+
+### Consulter ses informations
+- **GET** `/api/users/me/`
+  Récupère les informations de l'utilisateur connecté
+
+### Mettre à jour ses informations
+- **PUT/PATCH** `/api/users/me/`
+  Met à jour les informations de l'utilisateur
+
+  **Exemple de corps de requête :**
+  ```json
+  {
+    "email": "nouveau@email.com",
+    "can_be_contacted": true,
+    "can_data_be_shared": false
+  }
+  ```
+
+### Supprimer son compte
+- **DELETE** `/api/users/me/`
+  Supprime le compte de l'utilisateur (anonymisation des données) 
