@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import date
+from django.utils import timezone
 
 
 def validate_age(birth_date):
@@ -55,7 +56,8 @@ class User(AbstractUser):
         """
         Anonymise et supprime les données personnelles de l'utilisateur pour se conformer au droit à l'oubli.
         """
-        self.username = "Utilisateur supprimé"
+        timestamp = timezone.now().strftime("%Y%m%d%H%M%S")
+        self.username = f"deleted_user_{timestamp}_{self.id}"
         self.email = None
         self.birth_date = date(1900, 1, 1)
         self.consent = False
